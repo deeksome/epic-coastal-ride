@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Epic Coastal Ride 2025</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#764ba2" />
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js")
+        .then(() => console.log("Service Worker registered"));
+    }
+  </script>
+</head>
+<body>
+  <div class="brochure">
+    <!-- LEFT PANEL -->
+    <div class="panel-left">
+      <div class="decorative-circle circle-1"></div>
+      <div class="decorative-circle circle-2"></div>
+      <div class="decorative-circle circle-3"></div>
+
+      <h1>EPIC<br>COASTAL<br>RIDE 2025</h1>
+
+      <div class="bike-icon">🏍️</div>
+
+      <div class="ride-info">
+        <h3>RIDE DETAILS</h3>
+        <p><strong>📅 Duration:</strong> 12 Days</p>
+        <p><strong>📍 Start:</strong> Bangalore</p>
+        <p><strong>🏁 End:</strong> Bangalore</p>
+        <p><strong>🗓️ Dates:</strong> Dec 20-31, 2025</p>
+      </div>
+
+      <div class="ride-info">
+        <h3>WHAT TO EXPECT</h3>
+        <p>Experience the breathtaking coastal beauty of South India on this unforgettable motorbike adventure!</p>
+      </div>
+    </div>
+
+    <!-- MIDDLE PANEL -->
+    <div class="panel-middle">
+      <h2>🗺️ RIDE ITINERARY</h2>
+
+      <!-- Repeat this block for each day -->
+      <div class="day-card">
+        <div class="day-image-container">
+          <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&h=400&fit=crop" alt="Goa Beach" class="day-image">
+          <div class="image-overlay">Benaulim Beach, Goa</div>
+        </div>
+        <div class="day-content">
+          <span class="day-number">DAY 1 - Dec 20</span>
+          <div class="route">Bangalore <span class="route-arrow">→</span> Benaulim Beach</div>
+          <div class="details">
+            <div class="detail-item">⏰ Start: 5:00 AM</div>
+            <div class="detail-item">📏 598 km</div>
+          </div>
+          <div class="attractions">
+            <h4>🎯 Places to Visit En Route:</h4>
+            <ul>
+              <li>Chitradurga Fort (45 min stop)</li>
+              <li>Anmod Ghats scenic views</li>
+              <li>Dudhsagar Falls (16 km detour)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add other day-cards and rest-days here -->
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel-right">
+      <h2>✨ HIGHLIGHTS</h2>
+
+      <div class="stats">
+        <div class="stat-box">
+          <span class="stat-number">3,144</span>
+          <span>Total KM</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">12</span>
+          <span>Days</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">10</span>
+          <span>Destinations</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">40+</span>
+          <span>Attractions</span>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <h3>🌊 Experience</h3>
+        <ul>
+          <li>Pristine beaches of Goa</li>
+          <li>Temple town of Murudeshwara</li>
+          <li>Historic Kochi backwaters</li>
+          <li>Sunrise at Kanyakumari</li>
+          <li>Sacred Rameshwaram</li>
+          <li>French colonial Pondicherry</li>
+          <li>Vibrant Chennai culture</li>
+          <li>Ancient temples & forts</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <h3>🎯 What's Included</h3>
+        <ul>
+          <li>Detailed route planning</li>
+          <li>40+ tourist attractions</li>
+          <li>Group coordination</li>
+          <li>Scenic coastal highways</li>
+          <li>Cultural experiences</li>
+          <li>Adventure activities</li>
+        </ul>
+      </div>
+
+      <div class="contact">
+        <h3>📞 JOIN THE RIDE!</h3>
+        <p>Contact us for more details and registration</p>
+        <p style="margin-top: 15px; font-size: 1.2em;"><strong>Let's ride together! 🏍️💨</strong></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
