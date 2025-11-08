@@ -19,6 +19,7 @@ body {
   display: grid;
   grid-template-columns: 350px 1fr 350px;
   overflow: hidden;
+  height: calc(100vh - 40px); /* Subtract padding */
 }
 
 /* LEFT PANEL */
@@ -99,7 +100,7 @@ body {
   padding: 40px 30px;
   position: relative;
   overflow-y: auto;
-  max-height: 1000px;
+  height: 100%;
 }
 
 .panel-middle h2 {
@@ -126,11 +127,31 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-.day-image {
+.day-image-container {
+  position: relative;
   width: 100%;
   height: 200px;
+  overflow: hidden;
+}
+
+.day-image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  position: relative;
+  display: block;
+}
+
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+  padding: 20px 15px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1em;
+  z-index: 1;
 }
 
 .day-content {
@@ -325,4 +346,256 @@ body {
 .highlight-today {
     border: 2px solid #764ba2;
     box-shadow: 0 0 15px rgba(118, 75, 162, 0.4);
+}
+
+.decorative-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.1;
+}
+
+.circle-1 {
+    width: 150px;
+    height: 150px;
+    background: white;
+    top: 10%;
+    right: 5%;
+}
+
+.circle-2 {
+    width: 100px;
+    height: 100px;
+    background: white;
+    bottom: 20%;
+    left: 10%;
+}
+
+.circle-3 {
+    width: 80px;
+    height: 80px;
+    background: white;
+    top: 40%;
+    left: 5%;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .brochure {
+        grid-template-columns: 300px 1fr 300px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .brochure {
+        grid-template-columns: 1fr;
+        height: auto;
+        max-height: none;
+    }
+
+    .panel-left, .panel-middle, .panel-right {
+        height: auto;
+        overflow: visible;
+    }
+
+    .panel-middle {
+        overflow-y: visible;
+    }
+
+    .stats {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .brochure {
+        margin: 0;
+    }
+
+    .panel-left, .panel-middle, .panel-right {
+        padding: 20px 15px;
+    }
+
+    .panel-left h1 {
+        font-size: 2em;
+    }
+
+    .bike-icon {
+        width: 100px;
+        height: 100px;
+        font-size: 50px;
+    }
+
+    .day-card {
+        margin: 15px 0;
+    }
+
+    .day-image-container {
+        height: 180px;
+    }
+
+    .route {
+        font-size: 1.1em;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 0;
+    }
+
+    .panel-left h1 {
+        font-size: 1.8em;
+    }
+
+    .ride-info {
+        padding: 15px;
+    }
+
+    .ride-info h3 {
+        font-size: 1.2em;
+    }
+
+    .details {
+        grid-template-columns: 1fr;
+    }
+
+    .day-image-container {
+        height: 160px;
+    }
+
+    .image-overlay {
+        padding: 15px 10px;
+        font-size: 1em;
+    }
+
+    .stat-number {
+        font-size: 2em;
+    }
+
+    .highlight-box {
+        padding: 15px;
+    }
+}
+    background: white;
+    top: 40%;
+    left: 5%;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .brochure {
+    grid-template-columns: 300px 1fr 300px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .brochure {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: none;
+  }
+
+  .panel-left, .panel-middle, .panel-right {
+    height: auto;
+    overflow: visible;
+  }
+
+  .panel-middle {
+    overflow-y: visible;
+  }
+
+  .stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .brochure {
+    margin: 0;
+  }
+
+  .panel-left, .panel-middle, .panel-right {
+    padding: 20px 15px;
+  }
+
+  .panel-left h1 {
+    font-size: 2em;
+  }
+
+  .bike-icon {
+    width: 100px;
+    height: 100px;
+    font-size: 50px;
+  }
+
+  .day-card {
+    margin: 15px 0;
+  }
+
+  .day-image-container {
+    height: 180px;
+  }
+
+  .route {
+    font-size: 1.1em;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0;
+  }
+
+  .panel-left h1 {
+    font-size: 1.8em;
+  }
+
+  .ride-info {
+    padding: 15px;
+  }
+
+  .ride-info h3 {
+    font-size: 1.2em;
+  }
+
+  .details {
+    grid-template-columns: 1fr;
+  }
+
+  .day-image-container {
+    height: 160px;
+  }
+
+  .image-overlay {
+    padding: 15px 10px;
+    font-size: 1em;
+  }
+
+  .stat-number {
+    font-size: 2em;
+  }
+
+  .highlight-box {
+    padding: 15px;
+  }
+}
+    background: white;
+    top: 40%;
+    left: 5%;
 }
