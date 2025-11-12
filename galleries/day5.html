@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 5 Gallery - Epic Coastal Ride 2025</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#764ba2" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .gallery-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            color: white;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-center {
+            text-align: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .view-controls {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border-radius: 30px;
+            gap: 5px;
+        }
+
+        .view-button {
+            background: transparent;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .view-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .view-button.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .view-button svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .gallery-header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .gallery-header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-header {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .header-left, .header-center, .header-right {
+                justify-content: center;
+            }
+
+            .view-button span {
+                display: none;
+            }
+
+            .view-button {
+                padding: 8px;
+            }
+        }
+
+        .gallery-grid {
+            display: grid;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-grid.view-small {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+
+        .gallery-grid.view-medium {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        .gallery-grid.view-large {
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            aspect-ratio: 3/2;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 20px;
+            font-size: 0.9em;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            padding: 40px;
+            cursor: zoom-out;
+        }
+
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+
+        /* Carousel Styles */
+        .carousel-view {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            height: 80vh;
+        }
+
+        .carousel-view.active {
+            display: block;
+        }
+
+        .gallery-grid.hidden {
+            display: none;
+        }
+
+        .swiper {
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .swiper-slide img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .swiper-slide-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: #667eea !important;
+            background: rgba(255, 255, 255, 0.9);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 20px !important;
+        }
+
+        .swiper-pagination-bullet {
+            background: #667eea !important;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: #764ba2 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery-container">
+        <header class="gallery-header">
+            <div class="header-left">
+                <a href="../index.html" class="back-button">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                    Back to Itinerary
+                </a>
+            </div>
+            
+            <div class="header-center">
+                <h1>Day 5 Gallery</h1>
+                <p>Kannur → Kochi</p>
+            </div>
+            
+            <div class="header-right">
+                <div class="view-controls">
+                    <button class="view-button active" data-view="small" title="Small Grid">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 3h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 10h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 17h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4z"/>
+                        </svg>
+                        <span>Small</span>
+                    </button>
+                    <button class="view-button" data-view="medium" title="Medium Grid">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/>
+                        </svg>
+                        <span>Medium</span>
+                    </button>
+                    <button class="view-button" data-view="large" title="Large Grid">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 3h18v8H3zm0 10h18v8H3z"/>
+                        </svg>
+                        <span>Large</span>
+                    </button>
+                    <button class="view-button" data-view="carousel" title="Slideshow">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M2 6h4V2H2v4zm0 8h4v-4H2v4zm0 8h4v-4H2v4zm6-16h14V2H8v4zm0 8h14v-4H8v4zm0 8h14v-4H8v4z"/>
+                        </svg>
+                        <span>Carousel</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="gallery-grid view-small">
+            <div class="gallery-item">
+                <img src="../images/day5-kochi/welcome-to-kochi.jpg" alt="Welcome to Kochi" loading="lazy">
+                <div class="gallery-caption">Welcome to Kochi</div>
+            </div>
+        </div>
+
+        <div class="carousel-view">
+            <!-- Slider main container -->
+            <div class="swiper">
+                <!-- Additional required wrapper -->
+                <div class="swiper-wrapper">
+                    <!-- Slides -->
+                    <div class="swiper-slide">
+                        <img src="../images/day5-kochi/welcome-to-kochi.jpg" alt="Welcome to Kochi">
+                        <div class="swiper-slide-caption">Welcome to Kochi</div>
+                    </div>
+                </div>
+                <!-- If we need pagination -->
+                <div class="swiper-pagination"></div>
+
+                <!-- If we need navigation buttons -->
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // Initialize Swiper
+        const swiper = new Swiper('.swiper', {
+            // Optional parameters
+            loop: true,
+            keyboard: {
+                enabled: true,
+            },
+
+            // If we need pagination
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+
+            // Navigation arrows
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+
+        // View switching functionality
+        const viewButtons = document.querySelectorAll('.view-button');
+        const galleryGrid = document.querySelector('.gallery-grid');
+        const carouselView = document.querySelector('.carousel-view');
+
+        viewButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                viewButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+
+                const view = button.dataset.view;
+                
+                if (view === 'carousel') {
+                    galleryGrid.classList.add('hidden');
+                    carouselView.classList.add('active');
+                    // Update Swiper instance
+                    swiper.update();
+                } else {
+                    galleryGrid.classList.remove('hidden');
+                    carouselView.classList.remove('active');
+                    // Remove all view classes and add the selected one
+                    galleryGrid.classList.remove('view-small', 'view-medium', 'view-large');
+                    galleryGrid.classList.add(`view-${view}`);
+                }
+            });
+        });
+
+        // Lightbox functionality
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        let lightbox = null;
+
+        function createLightbox(imageSrc) {
+            // Create lightbox if it doesn't exist
+            if (!lightbox) {
+                lightbox = document.createElement('div');
+                lightbox.className = 'lightbox';
+                document.body.appendChild(lightbox);
+
+                // Close lightbox when clicked
+                lightbox.addEventListener('click', () => {
+                    lightbox.classList.remove('active');
+                });
+            }
+
+            // Create/update image
+            lightbox.innerHTML = `<img src="${imageSrc}" alt="Lightbox image">`;
+            lightbox.classList.add('active');
+        }
+
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const imageSrc = item.querySelector('img').src;
+                createLightbox(imageSrc);
+            });
+        });
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('../sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful');
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

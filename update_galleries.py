@@ -1,0 +1,536 @@
+import os
+
+template = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#764ba2" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .gallery-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            color: white;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-center {
+            text-align: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .view-controls {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border-radius: 30px;
+            gap: 5px;
+        }
+
+        .view-button {
+            background: transparent;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .view-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .view-button.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .view-button svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .gallery-header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .gallery-header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-header {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .header-left, .header-center, .header-right {
+                justify-content: center;
+            }
+
+            .view-button span {
+                display: none;
+            }
+
+            .view-button {
+                padding: 8px;
+            }
+        }
+
+        .gallery-grid {
+            display: grid;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-grid.view-small {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+
+        .gallery-grid.view-medium {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        .gallery-grid.view-large {
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            aspect-ratio: 3/2;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 20px;
+            font-size: 0.9em;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            padding: 40px;
+            cursor: zoom-out;
+        }
+
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+
+        /* Carousel Styles */
+        .carousel-view {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            height: 80vh;
+        }
+
+        .carousel-view.active {
+            display: block;
+        }
+
+        .gallery-grid.hidden {
+            display: none;
+        }
+
+        .swiper {
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .swiper-slide img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .swiper-slide-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: #667eea !important;
+            background: rgba(255, 255, 255, 0.9);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 20px !important;
+        }
+
+        .swiper-pagination-bullet {
+            background: #667eea !important;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: #764ba2 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery-container">
+        <div class="gallery-header">
+            <div class="header-left">
+                <a href="../index.html" class="back-button">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                    ← Back to Itinerary
+                </a>
+            </div>
+            
+            <div class="header-center">
+                <h1>{day_title}</h1>
+                <p>{route}</p>
+            </div>
+            
+            <div class="header-right">
+                <div class="view-controls">
+                    <button class="view-button active" data-view="small" title="Small Grid">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 3h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 10h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 17h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4z"/>
+                        </svg>
+                        <span>Small</span>
+                    </button>
+                    <button class="view-button" data-view="medium" title="Medium Grid">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/>
+                        </svg>
+                        <span>Medium</span>
+                    </button>
+                    <button class="view-button" data-view="large" title="Large Grid">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 3h18v8H3zm0 10h18v8H3z"/>
+                        </svg>
+                        <span>Large</span>
+                    </button>
+                    <button class="view-button" data-view="carousel" title="Slideshow">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M2 6h4V2H2v4zm0 8h4v-4H2v4zm0 8h4v-4H2v4zm6-16h14V2H8v4zm0 8h14v-4H8v4zm0 8h14v-4H8v4z"/>
+                        </svg>
+                        <span>Carousel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="gallery-grid view-small">
+            {gallery_items}
+        </div>
+
+        <div class="carousel-view">
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    {carousel_slides}
+                </div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lightbox" onclick="this.classList.remove('active')">
+        <img src="" alt="Enlarged view">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all required elements
+            const viewButtons = document.querySelectorAll('.view-button');
+            const galleryGrid = document.querySelector('.gallery-grid');
+            const carouselView = document.querySelector('.carousel-view');
+            
+            // Initialize Swiper
+            const swiper = new Swiper('.swiper', {
+                loop: true,
+                effect: 'fade',
+                fadeEffect: {
+                    crossFade: true
+                },
+                keyboard: {
+                    enabled: true,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                speed: 800,
+            });
+
+            // Setup lightbox functionality
+            document.querySelectorAll('.gallery-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const lightbox = document.querySelector('.lightbox');
+                    const lightboxImg = lightbox.querySelector('img');
+                    lightboxImg.src = this.querySelector('img').src;
+                    lightbox.classList.add('active');
+                });
+            });
+
+            // Setup view controls
+            viewButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    viewButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    const view = button.dataset.view;
+                    
+                    if (view === 'carousel') {
+                        galleryGrid.classList.add('hidden');
+                        carouselView.classList.add('active');
+                        swiper.update();
+                    } else {
+                        galleryGrid.classList.remove('hidden');
+                        carouselView.classList.remove('active');
+                        galleryGrid.classList.remove('view-small', 'view-medium', 'view-large');
+                        galleryGrid.classList.add(`view-${view}`);
+                    }
+
+                    localStorage.setItem('galleryView', view);
+                });
+            });
+
+            // Load saved view preference
+            const savedView = localStorage.getItem('galleryView');
+            if (savedView) {
+                const savedButton = document.querySelector(`[data-view="${savedView}"]`);
+                if (savedButton) {
+                    savedButton.click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>'''
+
+gallery_data = {
+    3: {
+        'title': 'Day 3 Gallery - Epic Coastal Ride 2025',
+        'day_title': 'Day 3 Gallery',
+        'route': 'Murudeshwara → Kannur',
+        'images': [
+            ('https://images.unsplash.com/photo-1512343879784-a960bf40e7f2', 'Murudeshwara Temple', 'Murudeshwara Temple at Dawn'),
+            ('https://images.unsplash.com/photo-1580977251946-c5f0f26e0863', 'Coastal Route', 'Scenic Coastal Route to Kannur'),
+            ('https://images.unsplash.com/photo-1626621341517-bbf3d9990a23', 'Kerala Border', 'Entering God\'s Own Country'),
+            ('https://images.unsplash.com/photo-1602216056096-3b40cc0c9944', 'Kannur Beach', 'Evening at Kannur Beach')
+        ]
+    },
+    4: {
+        'title': 'Day 4 Gallery - Epic Coastal Ride 2025',
+        'day_title': 'Day 4 Gallery',
+        'route': 'Rest Day in Kannur',
+        'images': [
+            ('https://images.unsplash.com/photo-1512343879784-a960bf40e7f2', 'Kannur Morning', 'Morning at Kannur Beach'),
+            ('https://images.unsplash.com/photo-1580977251946-c5f0f26e0863', 'Local Sights', 'Exploring Local Attractions'),
+            ('https://images.unsplash.com/photo-1626621341517-bbf3d9990a23', 'Street Food', 'Tasting Local Delicacies'),
+            ('https://images.unsplash.com/photo-1602216056096-3b40cc0c9944', 'Sunset', 'Beautiful Sunset at Beach')
+        ]
+    },
+    5: {
+        'title': 'Day 5 Gallery - Epic Coastal Ride 2025',
+        'day_title': 'Day 5 Gallery',
+        'route': 'Kannur → Kochi',
+        'images': [
+            ('https://images.unsplash.com/photo-1512343879784-a960bf40e7f2', 'Morning Ride', 'Starting Early from Kannur'),
+            ('https://images.unsplash.com/photo-1580977251946-c5f0f26e0863', 'Kerala Roads', 'Beautiful Kerala Highways'),
+            ('https://images.unsplash.com/photo-1626621341517-bbf3d9990a23', 'Chinese Nets', 'Famous Kochi Chinese Nets'),
+            ('https://images.unsplash.com/photo-1602216056096-3b40cc0c9944', 'Fort Kochi', 'Evening at Fort Kochi')
+        ]
+    }
+}
+
+def create_gallery_item(src, alt, caption):
+    return f'''            <div class="gallery-item">
+                <img src="{src}" alt="{alt}">
+                <div class="gallery-caption">{caption}</div>
+            </div>'''
+
+def create_carousel_slide(src, alt, caption):
+    return f'''                    <div class="swiper-slide">
+                        <img src="{src}" alt="{alt}">
+                        <div class="swiper-slide-caption">{caption}</div>
+                    </div>'''
+
+for day, data in gallery_data.items():
+    # Create gallery items and carousel slides
+    gallery_items = '\n'.join(create_gallery_item(src, alt, caption) 
+                            for src, alt, caption in data['images'])
+    carousel_slides = '\n'.join(create_carousel_slide(src, alt, caption) 
+                              for src, alt, caption in data['images'])
+    
+    # Fill template
+    content = template.format(
+        title=data['title'],
+        day_title=data['day_title'],
+        route=data['route'],
+        gallery_items=gallery_items,
+        carousel_slides=carousel_slides
+    )
+    
+    # Write to file
+    with open(f'galleries/day{day}.html', 'w') as f:
+        f.write(content)

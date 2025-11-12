@@ -7,36 +7,99 @@
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#764ba2" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("sw.js")
         .then(() => console.log("Service Worker registered"));
     }
   </script>
+  <style>
+    #map { height: 400px; }
+  </style>
 </head>
-<body>
+<body class="itinerary-page">
   <div class="brochure">
     <!-- LEFT PANEL -->
     <div class="panel-left">
-      <div class="decorative-circle circle-1"></div>
-      <div class="decorative-circle circle-2"></div>
-      <div class="decorative-circle circle-3"></div>
+      <div class="panel-left-content">
+        <div class="decorative-circle circle-1"></div>
+        <div class="decorative-circle circle-2"></div>
+        <div class="decorative-circle circle-3"></div>
 
-      <h1>EPIC<br>COASTAL<br>RIDE 2025</h1>
+        <h1>EPIC<br>COASTAL<br>RIDE 2025</h1>
 
-      <div class="bike-icon">🏍️</div>
+        <div class="bike-icon">🏍️</div>
 
-      <div class="ride-info">
-        <h3>RIDE DETAILS</h3>
-        <p><strong>📅 Duration:</strong> 12 Days</p>
-        <p><strong>📍 Start:</strong> Bangalore</p>
-        <p><strong>🏁 End:</strong> Bangalore</p>
-        <p><strong>🗓️ Dates:</strong> Dec 20-31, 2025</p>
-      </div>
+        <div class="ride-info is-expanded" data-section-key="details">
+          <div class="ride-info-header">
+            <h3>RIDE DETAILS</h3>
+            <button class="section-toggle" type="button" aria-expanded="true" aria-controls="ride-details-body" aria-label="Collapse ride details" data-section-label="ride details">
+              <span class="arrow"></span>
+            </button>
+          </div>
+          <div class="ride-info-body" id="ride-details-body">
+            <p><strong>📅 Duration:</strong> 12 Days</p>
+            <p><strong>📍 Start:</strong> Bangalore</p>
+            <p><strong>🏁 End:</strong> Bangalore</p>
+            <p><strong>🗓️ Dates:</strong> Dec 20-31, 2025</p>
+          </div>
+        </div>
 
-      <div class="ride-info">
-        <h3>WHAT TO EXPECT</h3>
-        <p>Experience the breathtaking coastal beauty of South India on this unforgettable motorbike adventure!</p>
+        <div class="ride-info is-expanded map-card" data-section-key="map">
+          <div class="ride-info-header">
+            <h3>ROUTE MAP</h3>
+            <button class="section-toggle" type="button" aria-expanded="true" aria-controls="ride-map-body" aria-label="Collapse route map" data-section-label="route map">
+              <span class="arrow"></span>
+            </button>
+          </div>
+          <div class="ride-info-body" id="ride-map-body">
+            <a class="map-link" href="https://www.google.com/maps/dir/?api=1&amp;origin=Bangalore&amp;destination=Bangalore&amp;travelmode=driving&amp;waypoints=Benaulim+Beach%7CMurudeshwara%7CKannur%7CKochi%7CKanyakumari%7CRameshwaram%7CKodiyakarai%7CPondicherry%7CChennai" target="_blank" rel="noopener">
+              <div id="map"></div>
+            </a>
+            <p class="map-note">Tap the map to open the full itinerary in your maps app.</p>
+          </div>
+          <script>
+            const map = L.map('map').setView([11.5, 75.5], 6);
+            window.epicRideMap = map;
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            const locations = [
+              {name: 'Bangalore', coords: [12.9716, 77.5946]},
+              {name: 'Benaulim Beach', coords: [15.2490, 73.9272]},
+              {name: 'Murudeshwara', coords: [14.0922, 74.4845]},
+              {name: 'Kannur', coords: [11.8745, 75.3704]},
+              {name: 'Kochi', coords: [9.9312, 76.2673]},
+              {name: 'Kanyakumari', coords: [8.0883, 77.5385]},
+              {name: 'Rameshwaram', coords: [9.2880, 79.3129]},
+              {name: 'Kodiyakarai', coords: [10.3760, 79.8530]},
+              {name: 'Pondicherry', coords: [11.9139, 79.8145]},
+              {name: 'Chennai', coords: [13.0827, 80.2707]}
+            ];
+            
+            locations.forEach(loc => {
+              L.marker(loc.coords)
+                .addTo(map)
+                .bindPopup(loc.name);
+            });
+          </script>
+        </div>
+
+        <div class="ride-info is-expanded" data-section-key="expectations">
+          <div class="ride-info-header">
+            <h3>WHAT TO EXPECT</h3>
+            <button class="section-toggle" type="button" aria-expanded="true" aria-controls="ride-expect-body" aria-label="Collapse what to expect" data-section-label="what to expect">
+              <span class="arrow"></span>
+            </button>
+          </div>
+          <div class="ride-info-body" id="ride-expect-body">
+            <p>Experience the breathtaking coastal beauty of South India on this unforgettable motorbike adventure!</p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -64,8 +127,17 @@
               <li>Dudhsagar Falls (16 km detour)</li>
             </ul>
           </div>
+          <a href="galleries/day1.html" class="gallery-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            View Gallery
+          </a>
         </div>
       </div>
+
+
+      </style>
 
       <div class="day-card">
         <div class="day-image-container">
@@ -83,9 +155,16 @@
             <h4>🎯 Places to Visit:</h4>
             <ul>
               <li>Gokarna beaches (Om Beach)</li>
+              <li>Murudeshwara Temple</li>
               <li>INS Chapal Warship Museum, Karwar</li>
               <li>Mirjan Fort</li>
             </ul>
+            <a href="galleries/day2.html" class="gallery-link">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              View Gallery
+            </a>
           </div>
         </div>
       </div>
@@ -109,6 +188,12 @@
               <li>Idagunji Ganapati Temple</li>
               <li>Mangalore beaches</li>
             </ul>
+            <a href="galleries/day3.html" class="gallery-link">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              View Gallery
+            </a>
           </div>
         </div>
       </div>
@@ -117,6 +202,12 @@
         <h3>☀️ REST DAY</h3>
         <p><strong>Day 4 - Dec 23</strong></p>
         <p>Relax at Kannur! Visit Payyambalam Beach, St. Angelo Fort, Muzhappilangad Drive-in Beach</p>
+        <a href="galleries/day4.html" class="gallery-link">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          View Gallery
+        </a>
       </div>
 
       <div class="day-card">
@@ -139,6 +230,12 @@
               <li>Fort Kochi & Mattancherry</li>
               <li>Dutch Palace</li>
             </ul>
+            <a href="galleries/day5.html" class="gallery-link">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              View Gallery
+            </a>
           </div>
         </div>
       </div>
@@ -162,6 +259,12 @@
               <li>Varkala Beach & Cliffs</li>
               <li>Thiruvananthapuram (Padmanabhaswamy Temple)</li>
             </ul>
+            <a href="galleries/day6.html" class="gallery-link">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              View Gallery
+            </a>
           </div>
         </div>
       </div>
@@ -186,6 +289,12 @@
               <li>Sunrise at tip of India</li>
               <li>Pamban Bridge</li>
             </ul>
+            <a href="galleries/day7.html" class="gallery-link">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              View Gallery
+            </a>
           </div>
         </div>
       </div>
@@ -194,11 +303,17 @@
         <h3>☀️ REST DAY</h3>
         <p><strong>Day 8 - Dec 27</strong></p>
         <p>Explore Rameshwaram! Visit Rameshwaram Temple, Dhanushkodi Beach, APJ Abdul Kalam Memorial</p>
+        <a href="galleries/day8.html" class="gallery-link">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          View Gallery
+        </a>
       </div>
 
       <div class="day-card">
         <div class="day-image-container">
-          <img src="https://images.unsplash.com/photo-1471922694854-ff1b63b20054?w=800&h=400&fit=crop" alt="Coastal Road" class="day-image">
+          <img src="https://images.unsplash.com/photo-1471922694854-a960bf40e7f2?w=800&h=400&fit=crop" alt="Coastal Road" class="day-image">
           <div class="image-overlay">Kodiyakarai Coast</div>
         </div>
         <div class="day-content">
@@ -215,13 +330,19 @@
               <li>Vedaranyam Beach</li>
               <li>Coastal fishing villages</li>
             </ul>
+            <a href="galleries/day9.html" class="gallery-link">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              View Gallery
+            </a>
           </div>
         </div>
       </div>
 
       <div class="day-card">
         <div class="day-image-container">
-          <img src="https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&h=400&fit=crop" alt="Pondicherry" class="day-image">
+          <img src="https://images.unsplash.com/photo-1564507592333-cf45f6bcc67f?w=800&h=400&fit=crop" alt="Pondicherry" class="day-image">
           <div class="image-overlay">Pondicherry Promenade</div>
         </div>
         <div class="day-content">
@@ -239,6 +360,12 @@
               <li>Auroville</li>
               <li>Paradise Beach</li>
             </ul>
+            <a href="galleries/day10.html" class="gallery-link">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              View Gallery
+            </a>
           </div>
         </div>
       </div>
@@ -263,6 +390,12 @@
               <li>Marina Beach</li>
               <li>Kapaleeshwarar Temple</li>
             </ul>
+            <a href="galleries/day11.html" class="gallery-link">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              View Gallery
+            </a>
           </div>
         </div>
       </div>
@@ -286,6 +419,12 @@
               <li>Vellore Fort</li>
               <li>Hosur</li>
             </ul>
+            <a href="galleries/day12.html" class="gallery-link">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              View Gallery
+            </a>
           </div>
         </div>
       </div>
@@ -342,10 +481,112 @@
 
       <div class="contact">
         <h3>📞 JOIN THE RIDE!</h3>
-        <p>Contact us for more details and registration</p>
+        <p>Contact <em>9738003900</em> for more details</p>
         <p style="margin-top: 15px; font-size: 1.2em;"><strong>Let's ride together! 🏍️💨</strong></p>
       </div>
     </div>
   </div>
+  <script>
+    (function() {
+      const breakpoint = 640;
+      const panelLeft = document.querySelector('.panel-left');
+
+      if (!panelLeft) {
+        return;
+      }
+
+      const sections = Array.from(panelLeft.querySelectorAll('.ride-info'));
+      const mapSection = panelLeft.querySelector('[data-section-key="map"]');
+
+      const refreshMap = () => {
+        if (!window.epicRideMap) return;
+        requestAnimationFrame(() => {
+          window.epicRideMap.invalidateSize();
+        });
+      };
+
+      const updateToggleState = (section, expanded) => {
+        const toggle = section.querySelector('.section-toggle');
+        if (!toggle) return;
+        const label = toggle.dataset.sectionLabel || 'section';
+        toggle.setAttribute('aria-expanded', expanded.toString());
+        toggle.setAttribute('aria-label', `${expanded ? 'Collapse' : 'Expand'} ${label}`);
+        if (expanded) {
+          toggle.classList.add('is-expanded');
+        } else {
+          toggle.classList.remove('is-expanded');
+        }
+      };
+
+      const setExpanded = (section, expanded, { userInitiated = false } = {}) => {
+        section.classList.toggle('is-expanded', expanded);
+        updateToggleState(section, expanded);
+
+        if (userInitiated) {
+          section.dataset.userState = expanded ? 'expanded' : 'collapsed';
+        }
+
+        if (section === mapSection && expanded) {
+          refreshMap();
+        }
+      };
+
+      const toggleSection = (section) => {
+        const expanded = section.classList.contains('is-expanded');
+        setExpanded(section, !expanded, { userInitiated: true });
+      };
+
+      sections.forEach((section) => {
+        const header = section.querySelector('.ride-info-header');
+        if (!header) return;
+
+        const heading = header.querySelector('h3');
+        const toggle = header.querySelector('.section-toggle');
+
+        const attachToggleHandler = (element) => {
+          if (!element) return;
+          element.addEventListener('click', () => toggleSection(section));
+          element.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              toggleSection(section);
+            }
+          });
+          element.setAttribute('tabindex', '0');
+        };
+
+        attachToggleHandler(heading);
+        if (toggle) {
+          toggle.dataset.sectionLabel = toggle.dataset.sectionLabel || heading?.textContent?.trim().toLowerCase() || 'section';
+          attachToggleHandler(toggle);
+        }
+      });
+
+      const applyStateForViewport = () => {
+        const isMobile = window.innerWidth <= breakpoint;
+
+        sections.forEach((section) => {
+          const userState = section.dataset.userState;
+
+          if (!isMobile) {
+            setExpanded(section, true);
+            delete section.dataset.userState;
+            return;
+          }
+
+          if (userState === 'expanded') {
+            setExpanded(section, true);
+          } else if (userState === 'collapsed') {
+            setExpanded(section, false);
+          } else {
+            setExpanded(section, false);
+          }
+        });
+      };
+
+      window.addEventListener('resize', applyStateForViewport);
+      applyStateForViewport();
+    })();
+  </script>
 </body>
 </html>

@@ -6,6 +6,13 @@ env/
 # Reference files
 compare.html
 
+# Keep image folders but ignore contents
+images/*
+!images/README.md
+!images/*/
+images/*/*
+!images/*/.gitkeep
+
 # IDE specific files
 .vscode/
 .idea/

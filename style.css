@@ -19,15 +19,20 @@ body {
   display: grid;
   grid-template-columns: 350px 1fr 350px;
   overflow: hidden;
-  height: calc(100vh - 40px); /* Subtract padding */
 }
 
 /* LEFT PANEL */
 .panel-left {
   background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
-  padding: 40px 30px;
+  padding: 40px 30px 30px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-left-content {
+  margin-top: 40px;
 }
 
 .panel-left::before {
@@ -59,6 +64,56 @@ body {
   color: white;
   position: relative;
   z-index: 1;
+}
+
+.ride-info-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ride-info-header h3 {
+  margin: 0;
+}
+
+.section-toggle {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.section-toggle:hover,
+.section-toggle:focus-visible {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.7);
+  outline: none;
+}
+
+.section-toggle .arrow {
+  width: 8px;
+  height: 8px;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+}
+
+.section-toggle[aria-expanded="true"] .arrow {
+  transform: rotate(135deg);
+}
+
+.ride-info-body {
+  margin-top: 18px;
 }
 
 .ride-info h3 {
@@ -100,7 +155,7 @@ body {
   padding: 40px 30px;
   position: relative;
   overflow-y: auto;
-  height: 100%;
+  max-height: 1000px;
 }
 
 .panel-middle h2 {
@@ -114,17 +169,42 @@ body {
 }
 
 .day-card {
-  background: white;
-  border-radius: 15px;
-  margin: 20px 0;
+  background: #ffffff;
+  border-radius: 8px;
+  margin: 16px 0;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #f0f0f0;
 }
 
 .day-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.gallery-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  color: #666;
+  text-decoration: none;
+  font-size: 0.9em;
+  margin-top: 12px;
+  transition: all 0.2s ease;
+}
+
+.gallery-link:hover {
+  background: #e5e5e5;
+  color: #333;
+}
+
+.gallery-link svg {
+  width: 18px;
+  height: 18px;
 }
 
 .day-image-container {
@@ -155,25 +235,28 @@ body {
 }
 
 .day-content {
-  padding: 20px;
+  padding: 16px;
 }
 
 .day-number {
-  display: inline-block;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
-  padding: 5px 15px;
-  border-radius: 20px;
-  font-weight: bold;
-  font-size: 0.9em;
-  margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  background: #f5f5f5;
+  color: #333;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85em;
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
 }
 
 .route {
-  font-size: 1.3em;
-  font-weight: bold;
-  margin: 10px 0;
-  color: #2d3436;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 8px 0;
+  color: #1a1a1a;
+  letter-spacing: -0.01em;
 }
 
 .route-arrow {
@@ -184,16 +267,18 @@ body {
 .details {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 2px solid #f0f0f0;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
 }
 
 .detail-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  font-size: 0.9em;
+  color: #666;
   color: #636e72;
   font-size: 0.95em;
 }
@@ -214,33 +299,47 @@ body {
   gap: 8px;
 }
 
+.attractions {
+  margin-top: 16px;
+}
+
+.attractions h4 {
+  font-size: 0.9em;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
 .attractions ul {
   list-style: none;
   padding-left: 0;
+  margin: 0;
 }
 
 .attractions li {
-  padding: 5px 0;
+  padding: 4px 0;
   padding-left: 20px;
   position: relative;
-  color: #636e72;
+  color: #4a4a4a;
   font-size: 0.9em;
+  line-height: 1.4;
 }
 
 .attractions li::before {
-  content: '📍';
+  content: '•';
   position: absolute;
-  left: 0;
+  left: 8px;
+  color: #666;
 }
 
 .rest-day {
-  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
-  color: #2d3436;
+  background: #f8f9fa;
+  color: #1a1a1a;
   text-align: center;
-  padding: 40px 20px;
-  margin: 20px 0;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  padding: 32px 20px;
+  margin: 16px 0;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
 }
 
 .rest-day h3 {
@@ -378,6 +477,47 @@ body {
     left: 5%;
 }
 
+@media (max-width: 640px) {
+  .panel-left .decorative-circle {
+    display: none;
+  }
+
+  .panel-left .ride-info {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: none;
+    border-radius: 14px;
+    padding: 18px 16px;
+    margin: 10px 0;
+  }
+
+  .panel-left .ride-info-header h3 {
+    font-size: 1.05em;
+    letter-spacing: 0.04em;
+  }
+
+  .panel-left .ride-info-body {
+    margin-top: 14px;
+  }
+
+  .panel-left .ride-info:not(.is-expanded) .ride-info-body {
+    display: none;
+  }
+
+  .panel-left .ride-info-header h3 {
+    cursor: pointer;
+  }
+
+  .section-toggle {
+    width: 28px;
+    height: 28px;
+  }
+
+  .section-toggle .arrow {
+    width: 7px;
+    height: 7px;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .brochure {
@@ -388,19 +528,12 @@ body {
 @media (max-width: 1024px) {
     .brochure {
         grid-template-columns: 1fr;
-        height: auto;
+    }
+    
+    .panel-middle {
         max-height: none;
     }
-
-    .panel-left, .panel-middle, .panel-right {
-        height: auto;
-        overflow: visible;
-    }
-
-    .panel-middle {
-        overflow-y: visible;
-    }
-
+    
     .stats {
         grid-template-columns: repeat(4, 1fr);
     }
@@ -483,119 +616,5 @@ body {
     .highlight-box {
         padding: 15px;
     }
-}
-    background: white;
-    top: 40%;
-    left: 5%;
-}
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .brochure {
-    grid-template-columns: 300px 1fr 300px;
   }
-}
-
-@media (max-width: 1024px) {
-  .brochure {
-    grid-template-columns: 1fr;
-    height: auto;
-    max-height: none;
-  }
-
-  .panel-left, .panel-middle, .panel-right {
-    height: auto;
-    overflow: visible;
-  }
-
-  .panel-middle {
-    overflow-y: visible;
-  }
-
-  .stats {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  body {
-    padding: 10px;
-  }
-
-  .brochure {
-    margin: 0;
-  }
-
-  .panel-left, .panel-middle, .panel-right {
-    padding: 20px 15px;
-  }
-
-  .panel-left h1 {
-    font-size: 2em;
-  }
-
-  .bike-icon {
-    width: 100px;
-    height: 100px;
-    font-size: 50px;
-  }
-
-  .day-card {
-    margin: 15px 0;
-  }
-
-  .day-image-container {
-    height: 180px;
-  }
-
-  .route {
-    font-size: 1.1em;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  body {
-    padding: 0;
-  }
-
-  .panel-left h1 {
-    font-size: 1.8em;
-  }
-
-  .ride-info {
-    padding: 15px;
-  }
-
-  .ride-info h3 {
-    font-size: 1.2em;
-  }
-
-  .details {
-    grid-template-columns: 1fr;
-  }
-
-  .day-image-container {
-    height: 160px;
-  }
-
-  .image-overlay {
-    padding: 15px 10px;
-    font-size: 1em;
-  }
-
-  .stat-number {
-    font-size: 2em;
-  }
-
-  .highlight-box {
-    padding: 15px;
-  }
-}
-    background: white;
-    top: 40%;
-    left: 5%;
-}

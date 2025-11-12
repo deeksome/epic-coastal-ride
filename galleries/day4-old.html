@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Head content and styles same as previous -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 4 Gallery - Epic Coastal Ride 2025</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#764ba2" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        /* Same styles as day2.html */
+    </style>
+</head>
+<body>
+    <div class="gallery-container">
+        <header class="gallery-header">
+            <div class="header-left">
+                <a href="../index.html" class="back-button">
+                    ← Back to Itinerary
+                </a>
+            </div>
+            <div class="header-center">
+                <h1 class="gallery-title">Day 4 - Rest Day in Kannur</h1>
+                <p class="gallery-subtitle">Dec 23, 2025</p>
+            </div>
+            <!-- Rest of the content same as day2.html -->
+        </header>
+        <div class="gallery-grid view-small">
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2" alt="Rest Day in Kannur">
+                <div class="gallery-caption">Relaxing in Kannur</div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1580977251946-c5f0f26e0863" alt="Local Exploration">
+                <div class="gallery-caption">Local Sightseeing</div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23" alt="Beach Time">
+                <div class="gallery-caption">Beach Activities</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal">
+        <button class="close-modal">×</button>
+        <div class="swiper">
+            <div class="swiper-wrapper">
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // View switching
+        const viewButtons = document.querySelectorAll('.view-button');
+        const galleryGrid = document.querySelector('.gallery-grid');
+
+        viewButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const view = button.getAttribute('data-view');
+                galleryGrid.className = 'gallery-grid ' + view;
+            });
+        });
+
+        // Modal and Swiper functionality
+        const modal = document.querySelector('.modal');
+        const closeModal = document.querySelector('.close-modal');
+        const galleryItems = document.querySelectorAll('.gallery-item img');
+        const swiper = new Swiper('.swiper', {
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+
+        // Add images to swiper
+        galleryItems.forEach((img, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'swiper-slide';
+            slide.innerHTML = `<img src="${img.src}" alt="${img.alt}">`;
+            swiper.appendSlide(slide);
+        });
+
+        // Open modal
+        galleryItems.forEach((img, index) => {
+            img.addEventListener('click', () => {
+                modal.classList.add('show');
+                swiper.slideTo(index, 0);
+            });
+        });
+
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            modal.classList.remove('show');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+            }
+        });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('../sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

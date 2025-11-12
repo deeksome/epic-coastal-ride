@@ -1,5 +1,28 @@
 // script.js
 
+// Register service worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registration successful');
+            })
+            .catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+    });
+}
+
+// Handle page loads
+window.addEventListener('load', () => {
+    if (document.body.classList.contains('itinerary-page')) {
+        // Force reload the page if coming from a gallery
+        if (document.referrer.includes('/galleries/')) {
+            window.location.reload(true);
+        }
+    }
+});
+
 // Smooth scroll for internal links (if added later)
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
